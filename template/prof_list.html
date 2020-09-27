@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+
+    <h2>{{ char_data.char_race }}</h2>
+
+
+    <div class="content-block">
+    <div class="info-block">
+        <h2 style="text-align: center">Информация</h2>
+        <div class="class-pick-info">
+            <h3>Создание персонажа начинается с выбора профессии, профессия определяет
+                навыки и предисторию героя. Позже мы выберем рассу персонажа, опционально можно будет
+                сгенерировать его предисторию и только после этого перейдём к выбору характеристик и
+                навыков героя.
+            </h3>
+            <p>Нажмите па профессию чтобы узнать о ней больше:</p>
+            {% for prof in professions %}
+            <div class="race-info" id="info_{{prof.name_eng}}" style="display:none">
+                <h2>
+                    {{ prof.info }}
+                </h2>
+
+                <form action="" method="post">
+                        {% csrf_token %}
+                        <div class="race_pick">
+                            <label for="prof_pick" style=""> Выбрать профессию</label>
+                            <input class="race_pick_button" id="prof_pick" type="submit" name="prof_pick" value="{{ prof.name }}">
+                        </div>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+        <div class="class-choice-block">
+            <h2 style="text-align: center">Выберите класс</h2>
+            <ul class="cl-choice">
+            {% for prof in professions %}
+                  <div class="class-container">
+                      <li>
+                          <input type="image" onclick="{{prof.for_js}}" width="100%" src="{{ prof.img.url }}">
+                      </li>
+                      <p>{{ prof.name }}</p>
+                  </div>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+
+
+<script>
+{% for prof in professions %}
+    function {{ prof.for_js }}{
+        {% for prof in professions %}
+            document.getElementById("info_{{prof.name_eng}}").style.display = 'none';
+        {% endfor %}
+        document.getElementById("info_{{prof.name_eng}}").style.display = 'block';
+    }
+{% endfor %}
+
+</script>
+
+{% endblock body %}

@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+
+<div class="content-block">
+
+        <div class="main-skill-block">
+            <h2 id="prof" about="{{char_data.char_prof}}">Профессия: {{char_data.char_prof}}</h2>
+            <h2 style="margin-bottom: 0;">Раса: {{char_data.char_race}}</h2>
+
+            <form action="" method="post">
+                {% csrf_token %}
+
+            <div class="info-block" style="width: 100%; margin-bottom: 5%;">
+            <h2 style="text-align: center">Информация</h2>
+                <div class="class-pick-info">
+                    <h3>Создание персонажа начинается с выбора профессии, профессия определяет
+                        навыки и предисторию героя. Позже мы выберем рассу персонажа, опционально можно будет
+                        сгенерировать его предисторию и только после этого перейдём к выбору характеристик и
+                        навыков героя.
+                    </h3>
+
+
+
+                    <input type="submit" id="finish_button" value="Создать персонажа" name="finish" style="display:none;">
+                </div>
+            </div>
+            <br>
+            <h2 style="text-align: center">Тут выбираются проффесиональные навыки:</h2>
+
+            <div class="profskill_counter">
+                <label for="profskill_current">Счётчик проф. навыков:</label>
+                <input type="number" readonly id="profskill_current" value="11">
+                <label for="profskill_cup"> ИЗ </label>
+                <input type="number" readonly id="profskill_cup" value="44">
+            </div>
+
+            <div class="skill-block" style="width: 100%; margin: 10px;">
+                {% for prof_skill in prof_skills %}
+                        <div class="skill-input" data-title="{{ prof_skill.info }}">
+                            {% if prof_skill.cost == 2 %}
+                                <label for="{{prof_skill.name_eng}}">{{prof_skill.name}} ({{prof_skill.cost}})</label>
+                            {% else %}
+                                <label for="{{prof_skill.name_eng}}">{{prof_skill.name}}</label>
+                            {% endif %}
+                        <input type="number" onclick="prof_skill_counter()" id="{{prof_skill.name_eng}}" name="{{prof_skill.name_eng}}"
+                               min="1" max="6" step="1" value="1">
+                            {% for stat,char_stat in stat_list.items %}
+                                {% if prof_skill.depended_stat == stat %}
+                                    <p> ({{ stat.short_name }}: {{char_stat.value}})</p>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                {% endfor %}
+            </div>
+
+
+            </form>
+            <!-- Скрипт счётчика проф.навыков-->
+            <script>
+            function prof_skill_counter(){
+                var elem = document.getElementById('skill_choice_block');
+                let stat_sum = 0;
+                {% for prof_skill in prof_skills %}
+                    let {{prof_skill.name_eng}} = +document.getElementById('{{prof_skill.name_eng}}').value * {{prof_skill.cost}};
+                    stat_sum += {{prof_skill.name_eng}};
+                {% endfor %}
+                document.getElementById('profskill_current').value= stat_sum;
+
+                if (stat_sum < 44) {
+                    elem.style.display = 'none';
+                }
+                else if(stat_sum == 44){
+                    elem.style.display = 'inline-block';
+                }
+                else {
+                    alert("Вы превысили порог очков навыков");
+                    elem.style.display = 'none';
+                }
+            };
+            </script>
+        </div>
+
+        <div class="skill-choice-block" id="skill_choice_block" style="display:none;">
+            <h2 style="text-align: center">Тут выбираются общие навыки:</h2>
+            <div class="stat_counter">
+                <label for="skill_current">Счётчик общих навыков:</label>
+                <input type="number" readonly id="skill_current" value="0">
+                <label for="skill_cup"> ИЗ </label>
+                <input type="number" readonly id="skill_cup" value="{{skill_points}}">
+            </div>
+
+            <div class="skill-container">
+                {% for stat, char_stat in stat_list.items %}
+                    {% if stat.name == 'Интеллект' or stat.name == 'Реакция' or stat.name == 'Ловкость' or stat.name == 'Телосложение' %}
+                    <div class="skill-block">
+                        <h2>{{ stat.name }}: {{ char_stat.value }}</h2>
+                        {% for skill in other_skills %}
+                            {% if skill.depended_stat == stat %}
+                            <div class="skill-input" data-title="{{ skill.info }}">
+                                {% if skill.cost == 2 %}
+                                    <label for="{{skill.name_eng}}">{{skill.name}} ({{skill.cost}})</label>
+                                {% else %}
+                                    <label for="{{skill.name_eng}}">{{skill.name}}</label>
+                                {% endif %}
+                                <input type="number" onclick="skill_counter()" id="{{skill.name_eng}}" name="{{skill.name_eng}}"
+                                   min="0" max="3" step="1" value="0">
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="skill-container" style="float: right;">
+                {% for stat, char_stat in stat_list.items %}
+                    {% if stat.name == 'Воля' or stat.name == 'Ремесло' or stat.name == 'Эмпатия' %}
+                    <div class="skill-block">
+                        <h2>{{ stat.name }}: {{ char_stat.value }}</h2>
+                        {% for skill in other_skills %}
+                            {% if skill.depended_stat == stat %}
+                            <div class="skill-input" data-title="{{ skill.info }}">
+                                {% if skill.cost == 2 %}
+                                    <label for="{{skill.name_eng}}">{{skill.name}} ({{skill.cost}})</label>
+                                {% else %}
+                                    <label for="{{skill.name_eng}}">{{skill.name}}</label>
+                                {% endif %}
+                                <input type="number" onclick="skill_counter()" id="{{skill.name_eng}}" name="{{skill.name_eng}}"
+                                   min="0" max="3" step="1" value="0">
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <!-- Скрипт счётчика навыков-->
+            <script>
+            function skill_counter(){
+                var elem = document.getElementById('finish_button');
+                var skill_cup = {{skill_points}};
+                let stat_sum = 0;
+                {% for skill in other_skills %}
+                    let {{skill.name_eng}} = +document.getElementById('{{skill.name_eng}}').value * {{skill.cost}};
+                    stat_sum += {{skill.name_eng}};
+                {% endfor %}
+                document.getElementById('skill_current').value= stat_sum;
+                if (stat_sum < skill_cup) {
+                    elem.style.display = 'none';
+                }
+                else if(stat_sum == skill_cup){
+                    elem.style.display = 'inline-block';
+                }
+                else {
+                    alert("Вы превысили порог очков навыков");
+                    elem.style.display = 'none';
+                }
+            };
+            </script>
+        </div>
+    </div>
+
+{% endblock body %}

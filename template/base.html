@@ -1,0 +1,39 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="{% static 'css/custom.css'%}">
+    <title>Witcher</title>
+</head>
+
+<body>
+
+  <div class="nav-bar">
+    <div class="home-button">
+      <a href="/" class="title">Конструктор персонажа</a>
+    </div>
+    <ul class="nav-buttons">
+      <li>
+        <a href="/registration" class="title">Зарегистрироваться</a>
+      </li>
+      <li>
+        <a href="/login" class="title" style="padding-right: 10px;">Войти</a>
+      </li>
+    </ul>
+  </div>
+
+  {% block body %}
+  {% endblock body %}
+
+  <!-- Скрипт счётчика навыков
+    <footer>
+        <h2>&copy; gendy </h2>
+    </footer>
+   -->
+</body>
+</html>

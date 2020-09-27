@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+    <div class="block">
+        <div class="one-line-block">
+            {% for char in character %}
+                <h2>Имя персонажа: {{ char.name }}</h2>
+            {% endfor %}
+        </div>
+
+        <div class="one-line-block">
+            {% for race in races %}
+               <h2>Раса: {{ race.name }}</h2>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="block">
+        <div class="one-line-block" style="float: left">
+            <h2>Основные статы:</h2>
+            {% for stat in stats %}
+                {% if stat.skill_base == 1 %}
+            <div style="border-radius: 2px; border: 2px solid #90989E;padding: 2px; margin: 2px;">
+                <h3>{{stat.name}}: {{stat.value}}</h3>
+            </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="one-line-block" style="float: left">
+            <h2>Дополнительные статы:</h2>
+            {% for stat in stats %}
+                {% if stat.skill_base == 0 and stat.main == 1 %}
+            <div style="border-radius: 2px; border: 2px solid #90989E;padding: 1px; margin: 2px;">
+                <h3>{{stat.name}}: {{stat.value}}</h3>
+            </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="one-line-block" style="float: left">
+        <h2>Навыки:</h2>
+        {% for skill in skills %}
+            <div style="border-radius: 2px; border: 2px solid #90989E;padding: 1px; margin: 2px;">
+                <div style="display: inline-block; width: 65%">
+                    <h3>{{skill.name}}</h3>
+                </div>
+                <div style="display: inline-block; padding: 1px; margin: 2px; float: right; height: 50%;">
+                    <h3 style="margin: 0; padding: 0;display: table-cell;vertical-align: middle;">{{skill.value}} + {{skill.depended_stat.value}}</h3>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+<form method="post">
+    {% csrf_token %}
+    <label for="make-pdf">Создать PDF файл</label>
+    <input type="submit" id="make-pdf">
+</form>
+{% endblock body %}

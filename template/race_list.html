@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+
+    <div class="content-block">
+    <div class="info-block">
+        <h2 style="text-align: center">Информация</h2>
+        <div class="class-pick-info">
+            <h3>{{error}}</h3>
+            <h3>Общая информация</h3>
+            <p id="info">Чтобы узнать о рассе подробней, нажми на неё.</p>
+            {% for race in races %}
+                <div class="race-info" id="{{ race.name_eng }}_info" style="display:none">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                    <label for="char_name">Введите имя персонажа:</label>
+                    <input type="text" id="char_name" name="char_name" placeholder="Имя персонажа">
+                    <h2>Бонусы расы {{ race.name }}:</h2>
+                    <h2>{{ race.info }}</h2>
+                        <div class="race_pick">
+                            <label for="race_pick" style=""> Выбрать расу</label>
+                            <input class="race_pick_button" id="race_pick" type="submit" name="race_pick" value="{{ race.name }}">
+                        </div>
+                    </form>
+                </div>
+
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="class-choice-block">
+         <h2 style="text-align: center">Выберите расу</h2>
+            <ul class="cl-choice">
+            {% for race in races %}
+                    <div class="class-container" style="width: 33%;">
+                        <li>
+                            <input type="image" onclick="{{race.for_js}}" width="100%" src="{{race.img}}" >
+                            <input type="hidden" value="{{race.name}}">
+                            <p>{{race.name}}</p>
+                        </li>
+                    </div>
+            {% endfor %}
+            </ul>
+    </div>
+    </div>
+
+{% for race in races %}
+
+<script>
+    function {{ race.for_js }}{
+        {% for race in races %}
+            document.getElementById("{{ race.name_eng }}_info").style.display = 'none';
+        {% endfor %}
+        document.getElementById("{{ race.name_eng }}_info").style.display = 'block';
+        document.getElementById("info").style.display = 'none';
+    }
+</script>
+
+{% endfor %}
+
+{% endblock body %}

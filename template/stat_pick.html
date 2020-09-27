@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+
+        <div class="content-block">
+        <div class="info-block">
+            <h2 id="prof" about="{{char_data.char_prof}}">Профессия: {{char_data.char_prof}}</h2>
+            <h2 style="margin-bottom: 0;">Раса: {{char_data.char_race}}</h2>
+            <br>
+            <h2 style="text-align: center">Информация</h2>
+            <div class="class-pick-info">
+                <h3>Создание персонажа начинается с выбора профессии, профессия определяет
+                    навыки и предисторию героя. Позже мы выберем рассу персонажа, опционально можно будет
+                    сгенерировать его предисторию и только после этого перейдём к выбору характеристик и
+                    навыков героя.
+                </h3>
+                <p>Ниже можно прочитать краткую информацию о профессиях:</p>
+                <h2>
+                    Далее идёт перечисление фишек классов.
+                </h2>
+            </div>
+        </div>
+
+        <div class="stat-choice-block" style="float: right;">
+            <div class="stat_counter">
+                <label for="stat_current">Счётчик статов:</label>
+                <input type="number" readonly id="stat_current" value="45">
+                <label for="stat_cup"> ИЗ </label>
+                <input type="number" readonly id="stat_cup" value="60">
+                <h2>Тут будем выбирать статы</h2>
+            </div>
+
+            <form action="" method="post">
+                {% csrf_token %}
+
+            <div class="stat-block">
+                {% for stat in main_stat %}
+                    <div class="stat-input">
+                        <label for="{{stat.name_eng}}">{{stat.name}}</label>
+                        <input type="number" onclick="stat_counter()" id="{{stat.name_eng}}" name="{{stat.name_eng}}" min="0" max="10" step="1" value="5">
+                    </div>
+                {% endfor %}
+
+                <input class="sec-stat-button" type="button" onclick="random_stat()" value="Случайные статы"/>
+                <input class="sec-stat-button" id="sec_stat_count" type="button" onclick="sec_stat_math()" value="Рассчитать вторичные параметры"/>
+            </div>
+
+            <div class="stat-block" style="float: right; padding-right: 8%;">
+                {% for s_stat in sec_stat %}
+                    <div class="stat-input">
+                        <label for="{{s_stat.name_eng}}">{{s_stat.name}}</label>
+                        <input type="number" readonly id="{{s_stat.name_eng}}" name="{{s_stat.name_eng}}">
+                    </div>
+                {% endfor %}
+                <input class="sec-stat-button" id="sumb-button" type="submit" style="display: none;" value="Продолжить создание персонажа с данными параметрами"/>
+            </div>
+            </form>
+    </div>
+    </div>
+
+
+<script>
+
+function randomInteger(min, max) {
+  let rand = min + Math.random() * (max + 1 - min);
+  return Math.floor(rand);
+};
+
+function stat_counter(){
+    var elem = document.getElementById('sec_stat_count');
+    let stat_sum = 0;
+    {% for stat in main_stat %}
+        let {{stat.name_eng}} = +document.getElementById('{{stat.name_eng}}').value;
+        stat_sum += {{stat.name_eng}};
+    {% endfor %}
+    document.getElementById('stat_current').value= stat_sum;
+
+    if (stat_sum > 60) {
+        alert("Вы превысили сумму статов")
+        elem.style.display = 'none';
+    }
+    else {
+        elem.style.display = 'inline-block';
+        return true;
+    }
+};
+
+function random_stat(){
+    let min = 1,
+        max = 10;
+        {% for stat in main_stat %}
+            document.getElementById('{{stat.name_eng}}').value= randomInteger(min, max);
+        {% endfor %}
+
+    var elem = document.getElementById('sumb-button');
+    elem.style.display = 'none';
+    stat_counter();
+};
+
+
+function sec_stat_math(){
+    if (stat_counter()) {
+    let profession = prof.getAttribute('About');
+
+    {% for stat in main_stat %}
+        let {{stat.name_eng}} = +document.getElementById('{{stat.name_eng}}').value;
+    {% endfor %}
+
+    let phys_stat_param = Math.floor((body + will)/2),
+        run = speed*3,
+        jump =  Math.floor(run/5),
+        hit_points = +phys_stat_param *5,
+        endurance = phys_stat_param *5,
+        carrying = body *10,
+        rest = phys_stat_param;
+
+    let stability = phys_stat_param;
+    if (stability >= 10) {
+        stability = 10;
+        }
+
+    let energy = 0;
+    if (profession == 'Маг'){
+        energy = 5;
+        }
+    if (profession == 'Жрец'){
+        energy = 2;
+        }
+
+
+    {% for s_stat in sec_stat %}
+        document.getElementById('{{s_stat.name_eng}}').value= {{s_stat.name_eng}};
+    {% endfor %}
+
+    var elem = document.getElementById('sumb-button');
+        elem.style.display = 'inline-block';
+    }
+    };
+</script>
+
+
+
+{% endblock body %}
