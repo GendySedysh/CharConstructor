@@ -4,10 +4,10 @@
 {% block body %}
 
 <div class="content-block">
-
+    <div style="display: flex; flex: 0 0 auto;">
         <div class="main-skill-block">
-            <h2 id="prof" about="{{char_data.char_prof}}">Профессия: {{char_data.char_prof}}</h2>
-            <h2 style="margin-bottom: 0;">Раса: {{char_data.char_race}}</h2>
+            <h2 style="margin-left: 2%" id="prof" about="{{character.profession}}"> Профессия: {{character.profession}}</h2>
+            <h2 style="margin-bottom: 0; margin-left: 2%">Раса: {{character.race}}</h2>
 
             <form action="" method="post">
                 {% csrf_token %}
@@ -37,6 +37,53 @@
             </div>
 
             <div class="skill-block" style="width: 100%; margin: 10px;">
+                {% if character.profession.name == 'Воин' %}
+                    <div class="skill-select">
+                        <select>
+                            {% for f_skill in fight_skills %}
+                            <option value="">
+                                {{ f_skill }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="skill-select">
+                        <select>
+                            {% for f_skill in fight_skills %}
+                            <option value="">
+                                {{ f_skill }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="skill-select">
+                        <select>
+                            {% for f_skill in fight_skills %}
+                            <option value="">
+                                {{ f_skill }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="skill-select">
+                        <select>
+                            {% for f_skill in fight_skills %}
+                            <option value="">
+                                {{ f_skill }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="skill-select">
+                        <select>
+                            {% for f_skill in fight_skills %}
+                            <option value="">
+                                {{ f_skill }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endif %}
                 {% for prof_skill in prof_skills %}
                         <div class="skill-input" data-title="{{ prof_skill.info }}">
                             {% if prof_skill.cost == 2 %}
@@ -54,9 +101,8 @@
                         </div>
                 {% endfor %}
             </div>
-
-
             </form>
+        </div>
             <!-- Скрипт счётчика проф.навыков-->
             <script>
             function prof_skill_counter(){
@@ -80,7 +126,6 @@
                 }
             };
             </script>
-        </div>
 
         <div class="skill-choice-block" id="skill_choice_block" style="display:none;">
             <h2 style="text-align: center">Тут выбираются общие навыки:</h2>
@@ -161,6 +206,9 @@
             };
             </script>
         </div>
+        </div>
+    <div class="footer" style="display: flex; flex: 1 0 auto; width: 100%; height: 5%; background-color: #e2e6e8;">
     </div>
+</div>
 
 {% endblock body %}

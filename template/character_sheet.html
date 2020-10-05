@@ -4,15 +4,15 @@
 {% block body %}
     <div class="block">
         <div class="one-line-block">
-            {% for char in character %}
-                <h2>Имя персонажа: {{ char.name }}</h2>
-            {% endfor %}
+                <h2>Имя персонажа: {{ character.name }}</h2>
         </div>
 
         <div class="one-line-block">
-            {% for race in races %}
-               <h2>Раса: {{ race.name }}</h2>
-            {% endfor %}
+               <h2>Раса: {{ character.race }}</h2>
+        </div>
+
+        <div class="one-line-block">
+               <h2>Профессия: {{ character.profession }}</h2>
         </div>
     </div>
 
@@ -53,10 +53,4 @@
             </div>
         {% endfor %}
     </div>
-
-<form method="post">
-    {% csrf_token %}
-    <label for="make-pdf">Создать PDF файл</label>
-    <input type="submit" id="make-pdf">
-</form>
 {% endblock body %}

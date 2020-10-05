@@ -55,15 +55,17 @@ class ProfessionList(models.Model):
 
 class Character(models.Model):
     name = models.CharField(max_length=30, primary_key=True)
+    race = models.ForeignKey(RaceList, on_delete=models.CASCADE, null=True)
+    profession = models.ForeignKey(ProfessionList, on_delete=models.CASCADE, null=True, default='Маг')
 
     def __str__(self):
-        return self.name
+        title = f'{self.race} {self.name}'
+        return title
 
     @classmethod
-    def create(cls, name):
-        char = cls(name=name)
-        char.save()
-        return print(f'Создан персонаж {name}')
+    def create(cls, character, race):
+        new_char_race = cls(character, race)
+        new_char_race.save()
 
 
 class CharacterStat(models.Model):
@@ -98,25 +100,6 @@ class CharacterSkill(models.Model):
 
     @classmethod
     def create(cls, name, value, info, cost, unique, character, depended_stat):
-        skill = cls(name=name, value=value, info=info, cost=cost, unique=unique, character=character, depended_stat=depended_stat)
+        skill = cls(name=name, value=value, info=info, cost=cost, unique=unique,
+                    character=character, depended_stat=depended_stat)
         skill.save()
-
-
-class CharacterRace(models.Model):
-    name = models.CharField(max_length=30)
-    character = models.ForeignKey(Character, on_delete=models.CASCADE, blank=True, null=True)
-    bonus = models.ForeignKey(StatList, on_delete=models.CASCADE, blank=True, null=True)
-
-    def __str__(self):
-        title = f'{self.character} {self.name}'
-        return title
-
-    @classmethod
-    def create(cls, name, character):
-        race = cls(name=name, character=character)
-        race.save()
-
-
-class CharacterProf(models.Model):
-    name = models.CharField(max_length=30)
-    character = models.ForeignKey(Character, on_delete=models.CASCADE, blank=True, null=True)
